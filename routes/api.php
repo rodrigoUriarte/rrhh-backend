@@ -19,3 +19,4 @@ Route::group([
 ], function(){
     Route::apiResource('empleados', \App\Http\Controllers\EmpleadoController::class);
 });
+Route::post('/login', LoginController::class);
