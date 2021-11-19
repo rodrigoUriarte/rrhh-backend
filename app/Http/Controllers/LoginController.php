@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -17,7 +19,6 @@ class LoginController extends Controller
         //$validated = $request->validated();
 
         $user = User::where('email', $request->email)->first();
-        $hash = Hash::check($request->password, $user->password);
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response([
                 'message' => ['Sus credenciales no son correctas.']

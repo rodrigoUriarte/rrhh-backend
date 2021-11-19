@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\EmpleadoRequest;
-use App\Http\Resources\EmpleadoResource;
-use App\Models\Empleado;
-use App\Models\Empresa;
+use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
-class EmpleadoController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +17,7 @@ class EmpleadoController extends Controller
      */
     public function index()
     {
-        return EmpleadoResource::collection(Empleado::all())
+        return UserResource::collection(User::all())
             ->response()
             ->setStatusCode(200);
     }
@@ -25,15 +25,19 @@ class EmpleadoController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $empleado = new Empleado($request->all());
-        $empleado->save();
+        return $request;
+        $user =  User::create([
+            'name'=>$request->name,
+            'email'=>$request->email,
+            'password'=>Hash::make($request->password)
+        ]);
 
-        return (new EmpleadoResource($empleado))
+        return (new UserResource($user))
             ->response()
             ->setStatusCode(201);
     }
@@ -41,12 +45,12 @@ class EmpleadoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        return (new EmpleadoResource(Empleado::findOrFail($id)))
+        return (new UserResource(User::findOrFail($id)->loadMissing('items')))
             ->response()
             ->setStatusCode(200);
     }
@@ -54,18 +58,21 @@ class EmpleadoController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(EmpleadoRequest $request, $id)
+    public function update(UserRequest $request, $id)
     {
         //$validated = $request->validated();
 
-        $empleado = Empleado::findOrFail($id);
-        $empleado->update($request->all());
+        $user = User::findOrFail($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->save();
 
-        return (new EmpleadoResource($empleado))
+        return (new UserResource($user))
             ->response()
             ->setStatusCode(201);
     }
@@ -73,14 +80,15 @@ class EmpleadoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        $user = Empleado::findOrFail($id);
+        $user = User::findOrFail($id);
         $user->delete();
 
         return response()->json(null, 204);
     }
+
 }

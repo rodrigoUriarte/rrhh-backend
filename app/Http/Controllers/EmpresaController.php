@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\EmpleadoRequest;
-use App\Http\Resources\EmpleadoResource;
-use App\Models\Empleado;
+use App\Http\Requests\EmpresaRequest;
+use App\Http\Resources\EmpresaResource;
 use App\Models\Empresa;
 use Illuminate\Http\Request;
 
-class EmpleadoController extends Controller
+class EmpresaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +16,7 @@ class EmpleadoController extends Controller
      */
     public function index()
     {
-        return EmpleadoResource::collection(Empleado::all())
+        return EmpresaResource::collection(Empresa::all())
             ->response()
             ->setStatusCode(200);
     }
@@ -30,10 +29,10 @@ class EmpleadoController extends Controller
      */
     public function store(Request $request)
     {
-        $empleado = new Empleado($request->all());
-        $empleado->save();
+        $empresa = new Empresa($request->all());
+        $empresa->save();
 
-        return (new EmpleadoResource($empleado))
+        return (new EmpresaResource($empresa))
             ->response()
             ->setStatusCode(201);
     }
@@ -46,7 +45,7 @@ class EmpleadoController extends Controller
      */
     public function show($id)
     {
-        return (new EmpleadoResource(Empleado::findOrFail($id)))
+        return (new EmpresaResource(Empresa::findOrFail($id)))
             ->response()
             ->setStatusCode(200);
     }
@@ -58,14 +57,14 @@ class EmpleadoController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(EmpleadoRequest $request, $id)
+    public function update(EmpresaRequest $request, $id)
     {
         //$validated = $request->validated();
 
-        $empleado = Empleado::findOrFail($id);
-        $empleado->update($request->all());
+        $empresa = Empresa::findOrFail($id);
+        $empresa->update($request->all());
 
-        return (new EmpleadoResource($empleado))
+        return (new EmpresaResource($empresa))
             ->response()
             ->setStatusCode(201);
     }
@@ -78,8 +77,8 @@ class EmpleadoController extends Controller
      */
     public function destroy($id)
     {
-        $user = Empleado::findOrFail($id);
-        $user->delete();
+        $empresa = Empresa::findOrFail($id);
+        $empresa->delete();
 
         return response()->json(null, 204);
     }
