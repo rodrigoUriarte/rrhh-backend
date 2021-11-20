@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\EmpresaRequest;
-use App\Http\Resources\EmpresaResource;
-use App\Models\Empresa;
+use App\Http\Requests\AreaRequest;
+use App\Http\Resources\AreaResource;
+use App\Models\Area;
 
-class EmpresaController extends Controller
+class AreaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class EmpresaController extends Controller
      */
     public function index()
     {
-        return EmpresaResource::collection(Empresa::all())
+        return AreaResource::collection(Area::all())
             ->response()
             ->setStatusCode(200);
     }
@@ -26,12 +26,12 @@ class EmpresaController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(EmpresaRequest $request)
+    public function store(AreaRequest $request)
     {
-        $empresa = new Empresa($request->all());
-        $empresa->save();
+        $area = new Area($request->all());
+        $area->save();
 
-        return (new EmpresaResource($empresa))
+        return (new AreaResource($area))
             ->response()
             ->setStatusCode(201);
     }
@@ -44,7 +44,7 @@ class EmpresaController extends Controller
      */
     public function show($id)
     {
-        return (new EmpresaResource(Empresa::findOrFail($id)))
+        return (new AreaResource(Area::findOrFail($id)))
             ->response()
             ->setStatusCode(200);
     }
@@ -56,14 +56,14 @@ class EmpresaController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(EmpresaRequest $request, $id)
+    public function update(AreaRequest $request, $id)
     {
         //$validated = $request->validated();
 
-        $empresa = Empresa::findOrFail($id);
-        $empresa->update($request->all());
+        $area = Area::findOrFail($id);
+        $area->update($request->all());
 
-        return (new EmpresaResource($empresa))
+        return (new AreaResource($area))
             ->response()
             ->setStatusCode(201);
     }
@@ -76,8 +76,8 @@ class EmpresaController extends Controller
      */
     public function destroy($id)
     {
-        $empresa = Empresa::findOrFail($id);
-        $empresa->delete();
+        $area = Area::findOrFail($id);
+        $area->delete();
 
         return response()->json(null, 204);
     }

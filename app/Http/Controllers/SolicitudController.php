@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\EmpresaRequest;
-use App\Http\Resources\EmpresaResource;
-use App\Models\Empresa;
+use App\Http\Requests\SolicitudRequest;
+use App\Http\Resources\SolicitudResource;
+use App\Models\Solicitud;
 
-class EmpresaController extends Controller
+class SolicitudController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class EmpresaController extends Controller
      */
     public function index()
     {
-        return EmpresaResource::collection(Empresa::all())
+        return SolicitudResource::collection(Solicitud::all())
             ->response()
             ->setStatusCode(200);
     }
@@ -26,12 +26,12 @@ class EmpresaController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(EmpresaRequest $request)
+    public function store(SolicitudRequest $request)
     {
-        $empresa = new Empresa($request->all());
-        $empresa->save();
+        $solicitud = new Solicitud($request->all());
+        $solicitud->save();
 
-        return (new EmpresaResource($empresa))
+        return (new SolicitudResource($solicitud))
             ->response()
             ->setStatusCode(201);
     }
@@ -44,7 +44,7 @@ class EmpresaController extends Controller
      */
     public function show($id)
     {
-        return (new EmpresaResource(Empresa::findOrFail($id)))
+        return (new SolicitudResource(Solicitud::findOrFail($id)))
             ->response()
             ->setStatusCode(200);
     }
@@ -56,14 +56,14 @@ class EmpresaController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(EmpresaRequest $request, $id)
+    public function update(SolicitudRequest $request, $id)
     {
         //$validated = $request->validated();
 
-        $empresa = Empresa::findOrFail($id);
-        $empresa->update($request->all());
+        $solicitud = Solicitud::findOrFail($id);
+        $solicitud->update($request->all());
 
-        return (new EmpresaResource($empresa))
+        return (new SolicitudResource($solicitud))
             ->response()
             ->setStatusCode(201);
     }
@@ -76,8 +76,8 @@ class EmpresaController extends Controller
      */
     public function destroy($id)
     {
-        $empresa = Empresa::findOrFail($id);
-        $empresa->delete();
+        $solicitud = Solicitud::findOrFail($id);
+        $solicitud->delete();
 
         return response()->json(null, 204);
     }

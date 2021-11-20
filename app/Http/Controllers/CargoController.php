@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\EmpresaRequest;
-use App\Http\Resources\EmpresaResource;
-use App\Models\Empresa;
+use App\Http\Requests\CargoRequest;
+use App\Http\Resources\CargoResource;
+use App\Models\Cargo;
 
-class EmpresaController extends Controller
+class CargoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class EmpresaController extends Controller
      */
     public function index()
     {
-        return EmpresaResource::collection(Empresa::all())
+        return CargoResource::collection(Cargo::all())
             ->response()
             ->setStatusCode(200);
     }
@@ -26,12 +26,12 @@ class EmpresaController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(EmpresaRequest $request)
+    public function store(CargoRequest $request)
     {
-        $empresa = new Empresa($request->all());
-        $empresa->save();
+        $cargo = new Cargo($request->all());
+        $cargo->save();
 
-        return (new EmpresaResource($empresa))
+        return (new CargoResource($cargo))
             ->response()
             ->setStatusCode(201);
     }
@@ -44,7 +44,7 @@ class EmpresaController extends Controller
      */
     public function show($id)
     {
-        return (new EmpresaResource(Empresa::findOrFail($id)))
+        return (new CargoResource(Cargo::findOrFail($id)))
             ->response()
             ->setStatusCode(200);
     }
@@ -56,14 +56,14 @@ class EmpresaController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(EmpresaRequest $request, $id)
+    public function update(CargoRequest $request, $id)
     {
         //$validated = $request->validated();
 
-        $empresa = Empresa::findOrFail($id);
-        $empresa->update($request->all());
+        $cargo = Cargo::findOrFail($id);
+        $cargo->update($request->all());
 
-        return (new EmpresaResource($empresa))
+        return (new CargoResource($cargo))
             ->response()
             ->setStatusCode(201);
     }
@@ -76,8 +76,8 @@ class EmpresaController extends Controller
      */
     public function destroy($id)
     {
-        $empresa = Empresa::findOrFail($id);
-        $empresa->delete();
+        $cargo = Cargo::findOrFail($id);
+        $cargo->delete();
 
         return response()->json(null, 204);
     }

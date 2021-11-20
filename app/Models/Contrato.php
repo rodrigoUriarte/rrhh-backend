@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Empresa extends Model
+class Contrato extends Model
 {
     use HasFactory;
 
@@ -18,9 +18,16 @@ class Empresa extends Model
         'id',
     ];
 
-    public function areas()
+    public function cargo()
     {
-        return $this->hasMany(Area::class);
+        return $this->belongsTo(Cargo::class);
     }
-
+    public function tipoContrato()
+    {
+        return $this->belongsTo(TipoContrato::class);
+    }
+    public function empleado()
+    {
+        return $this->belongsTo(Empleado::class);
+    }
 }

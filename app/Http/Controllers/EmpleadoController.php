@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EmpleadoRequest;
 use App\Http\Resources\EmpleadoResource;
 use App\Models\Empleado;
-use App\Models\Empresa;
-use Illuminate\Http\Request;
 
 class EmpleadoController extends Controller
 {
@@ -28,7 +26,7 @@ class EmpleadoController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(EmpleadoRequest $request)
     {
         $empleado = new Empleado($request->all());
         $empleado->save();
@@ -78,8 +76,8 @@ class EmpleadoController extends Controller
      */
     public function destroy($id)
     {
-        $user = Empleado::findOrFail($id);
-        $user->delete();
+        $empleado = Empleado::findOrFail($id);
+        $empleado->delete();
 
         return response()->json(null, 204);
     }

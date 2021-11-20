@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\EmpresaRequest;
-use App\Http\Resources\EmpresaResource;
-use App\Models\Empresa;
+use App\Http\Requests\ContratoRequest;
+use App\Http\Resources\ContratoResource;
+use App\Models\Contrato;
 
-class EmpresaController extends Controller
+class ContratoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class EmpresaController extends Controller
      */
     public function index()
     {
-        return EmpresaResource::collection(Empresa::all())
+        return ContratoResource::collection(Contrato::all())
             ->response()
             ->setStatusCode(200);
     }
@@ -26,12 +26,12 @@ class EmpresaController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(EmpresaRequest $request)
+    public function store(ContratoRequest $request)
     {
-        $empresa = new Empresa($request->all());
-        $empresa->save();
+        $contrato = new Contrato($request->all());
+        $contrato->save();
 
-        return (new EmpresaResource($empresa))
+        return (new ContratoResource($contrato))
             ->response()
             ->setStatusCode(201);
     }
@@ -44,7 +44,7 @@ class EmpresaController extends Controller
      */
     public function show($id)
     {
-        return (new EmpresaResource(Empresa::findOrFail($id)))
+        return (new ContratoResource(Contrato::findOrFail($id)))
             ->response()
             ->setStatusCode(200);
     }
@@ -56,14 +56,14 @@ class EmpresaController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(EmpresaRequest $request, $id)
+    public function update(ContratoRequest $request, $id)
     {
         //$validated = $request->validated();
 
-        $empresa = Empresa::findOrFail($id);
-        $empresa->update($request->all());
+        $contrato = Contrato::findOrFail($id);
+        $contrato->update($request->all());
 
-        return (new EmpresaResource($empresa))
+        return (new ContratoResource($contrato))
             ->response()
             ->setStatusCode(201);
     }
@@ -76,8 +76,8 @@ class EmpresaController extends Controller
      */
     public function destroy($id)
     {
-        $empresa = Empresa::findOrFail($id);
-        $empresa->delete();
+        $contrato = Contrato::findOrFail($id);
+        $contrato->delete();
 
         return response()->json(null, 204);
     }

@@ -17,5 +17,14 @@ class Empleado extends Model
     protected $guarded = [
         'id',
     ];
+
+    public function contratos()
+    {
+        return $this->hasMany(Contrato::class);
+    }
+    public function solicitudes()
+    {
+        return $this->hasMany(Solicitud::class);
+    }
 }
 
