@@ -15,12 +15,10 @@ class Departamentos extends Migration
     {
         //
         Schema::create('departamentos', function (Blueprint $table) {
-            $table->engine="InnoDB";
-            $table->bigIncrements('id');
+            $table->id();
+            $table->foreignId('area_id')->constrained();
             $table->string('nombre');
-            $table->bigInteger('areas_id')->unsigned();
             $table->timestamps();
-            $table->foreign('areas_id')->references('id')->on('areas');
         });
     }
 

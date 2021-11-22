@@ -15,12 +15,10 @@ class Areas extends Migration
     {
         //
         Schema::create('areas', function (Blueprint $table) {
-            $table->engine="InnoDB";
-            $table->bigIncrements('id');
+            $table->id();
+            $table->foreignId('empresa_id')->constrained();
             $table->string('nombre');
-            $table->bigInteger('empresas_id')->unsigned();
             $table->timestamps();
-            $table->foreign('empresas_id')->references('id')->on('empresas');
         });
     }
 

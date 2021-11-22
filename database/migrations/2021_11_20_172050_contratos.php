@@ -15,17 +15,13 @@ class Contratos extends Migration
     {
         //
         Schema::create('contratos', function (Blueprint $table) {
-            $table->engine="InnoDB";
-            $table->bigIncrements('id');
+            $table->id();
+            $table->foreignId('empleado_id')->constrained();
+            $table->foreignId('tipo_contrato_id')->constrained('tipos_contrato');
+            $table->foreignId('cargo_id')->constrained();
             $table->string('nombre');
             $table->date('fecha');
-            $table->bigInteger('empleados_id')->unsigned();
-            $table->bigInteger('tipo_contratos_id')->unsigned();
-            $table->bigInteger('cargos_id')->unsigned();
             $table->timestamps();
-            $table->foreign('empleados_id')->references('id')->on('empleados');
-            $table->foreign('tipo_contratos_id')->references('id')->on('tipo_contratos');
-            $table->foreign('cargos_id')->references('id')->on('cargos');
         });
     }
 

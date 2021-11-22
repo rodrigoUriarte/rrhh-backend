@@ -15,15 +15,12 @@ class Solicitudes extends Migration
     {
         //
         Schema::create('solicitudes', function (Blueprint $table) {
-            $table->engine="InnoDB";
-            $table->bigIncrements('id');
+            $table->id();
+            $table->foreignId('empleado_id')->constrained();
+            $table->foreignId('tipo_solicitud_id')->constrained('tipos_solicitud');
             $table->string('nombre');
             $table->date('fecha');
-            $table->bigInteger('empleados_id')->unsigned();
-            $table->bigInteger('tipos_solicitud_id')->unsigned();
             $table->timestamps();
-            $table->foreign('empleados_id')->references('id')->on('empleados');
-            $table->foreign('tipos_solicitud_id')->references('id')->on('tipos_solicitud');
         });
     }
 

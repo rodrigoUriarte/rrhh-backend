@@ -15,13 +15,11 @@ class Cargos extends Migration
     {
         //
         Schema::create('cargos', function (Blueprint $table) {
-            $table->engine="InnoDB";
-            $table->bigIncrements('id');
+            $table->id();
+            $table->foreignId('departamento_id')->constrained();
             $table->string('nombre');
             $table->date('fecha');
-            $table->bigInteger('departamentos_id')->unsigned();
             $table->timestamps();
-            $table->foreign('departamentos_id')->references('id')->on('departamentos');
         });
     }
 
