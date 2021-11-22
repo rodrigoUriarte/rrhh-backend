@@ -14,6 +14,15 @@ class EmpresaResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'areas' => AreaResource::collection($this->whenLoaded('areas')),
+            'denominacion_social' => $this->denominacion_social,
+            'clasificacion' => $this->clasificacion,
+            'domicilio' => $this->domicilio,
+            'telefono' => $this->telefono,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
+        ];
     }
 }

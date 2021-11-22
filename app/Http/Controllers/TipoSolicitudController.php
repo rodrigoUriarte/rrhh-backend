@@ -15,7 +15,7 @@ class TipoSolicitudController extends Controller
      */
     public function index()
     {
-        return TipoSolicitudResource::collection(TipoSolicitud::all())
+        return TipoSolicitudResource::collection(TipoSolicitud::with(['solicitudes'])->get())
             ->response()
             ->setStatusCode(200);
     }
@@ -44,7 +44,7 @@ class TipoSolicitudController extends Controller
      */
     public function show($id)
     {
-        return (new TipoSolicitudResource(TipoSolicitud::findOrFail($id)))
+        return (new TipoSolicitudResource(TipoSolicitud::with(['solicitudes'])->findOrFail($id)))
             ->response()
             ->setStatusCode(200);
     }

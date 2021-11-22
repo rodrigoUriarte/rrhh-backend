@@ -15,7 +15,7 @@ class AreaController extends Controller
      */
     public function index()
     {
-        return AreaResource::collection(Area::all())
+        return AreaResource::collection(Area::with(['empresa','departamentos'])->get())
             ->response()
             ->setStatusCode(200);
     }
@@ -44,7 +44,7 @@ class AreaController extends Controller
      */
     public function show($id)
     {
-        return (new AreaResource(Area::findOrFail($id)))
+        return (new AreaResource(Area::with(['empresa','departamentos'])->findOrFail($id)))
             ->response()
             ->setStatusCode(200);
     }

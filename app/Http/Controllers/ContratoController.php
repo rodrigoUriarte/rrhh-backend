@@ -15,7 +15,7 @@ class ContratoController extends Controller
      */
     public function index()
     {
-        return ContratoResource::collection(Contrato::all())
+        return ContratoResource::collection(Contrato::with(['empleado','tipoContrato','cargo'])->get())
             ->response()
             ->setStatusCode(200);
     }
@@ -44,7 +44,7 @@ class ContratoController extends Controller
      */
     public function show($id)
     {
-        return (new ContratoResource(Contrato::findOrFail($id)))
+        return (new ContratoResource(Contrato::with(['empleado','tipoContrato','cargo'])->findOrFail($id)))
             ->response()
             ->setStatusCode(200);
     }

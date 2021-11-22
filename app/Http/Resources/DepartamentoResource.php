@@ -14,6 +14,13 @@ class DepartamentoResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'area' => new AreaResource($this->whenLoaded('area')),
+            'cargos' => CargoResource::collection($this->whenLoaded('cargos')),
+            'nombre' => $this->nombre,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
+        ];
     }
 }

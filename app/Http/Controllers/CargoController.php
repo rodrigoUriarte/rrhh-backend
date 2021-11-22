@@ -15,7 +15,7 @@ class CargoController extends Controller
      */
     public function index()
     {
-        return CargoResource::collection(Cargo::all())
+        return CargoResource::collection(Cargo::with(['departamento','contrato'])->get())
             ->response()
             ->setStatusCode(200);
     }
@@ -44,7 +44,7 @@ class CargoController extends Controller
      */
     public function show($id)
     {
-        return (new CargoResource(Cargo::findOrFail($id)))
+        return (new CargoResource(Cargo::with(['departamento','contrato'])->findOrFail($id)))
             ->response()
             ->setStatusCode(200);
     }

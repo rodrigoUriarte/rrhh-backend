@@ -14,6 +14,13 @@ class AreaResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'empresa' => new EmpresaResource($this->whenLoaded('empresa')),
+            'departamentos' => DepartamentoResource::collection($this->whenLoaded('departamentos')),
+            'nombre' => $this->nombre,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
+        ];
     }
 }

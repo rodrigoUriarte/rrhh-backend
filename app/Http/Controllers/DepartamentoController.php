@@ -15,7 +15,7 @@ class DepartamentoController extends Controller
      */
     public function index()
     {
-        return DepartamentoResource::collection(Departamento::all())
+        return DepartamentoResource::collection(Departamento::with(['area','cargos'])->get())
             ->response()
             ->setStatusCode(200);
     }
@@ -44,7 +44,7 @@ class DepartamentoController extends Controller
      */
     public function show($id)
     {
-        return (new DepartamentoResource(Departamento::findOrFail($id)))
+        return (new DepartamentoResource(Departamento::with(['area','cargos'])->findOrFail($id)))
             ->response()
             ->setStatusCode(200);
     }

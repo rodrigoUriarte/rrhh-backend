@@ -14,6 +14,14 @@ class SolicitudResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'empleado' => new EmpleadoResource($this->whenLoaded('empleado')),
+            'tipoSolicitud' => new TipoSolicitudResource($this->whenLoaded('tipoSolicitud')),
+            'nombre' => $this->nombre,
+            'fecha' => $this->fecha,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
+        ];
     }
 }

@@ -15,7 +15,7 @@ class TipoContratoController extends Controller
      */
     public function index()
     {
-        return TipoContratoResource::collection(TipoContrato::all())
+        return TipoContratoResource::collection(TipoContrato::with(['contratos'])->get())
             ->response()
             ->setStatusCode(200);
     }
@@ -44,7 +44,7 @@ class TipoContratoController extends Controller
      */
     public function show($id)
     {
-        return (new TipoContratoResource(TipoContrato::findOrFail($id)))
+        return (new TipoContratoResource(TipoContrato::with(['contratos'])->findOrFail($id)))
             ->response()
             ->setStatusCode(200);
     }

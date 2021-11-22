@@ -15,7 +15,7 @@ class SolicitudController extends Controller
      */
     public function index()
     {
-        return SolicitudResource::collection(Solicitud::all())
+        return SolicitudResource::collection(Solicitud::with(['empleado','tipoSolicitud'])->get())
             ->response()
             ->setStatusCode(200);
     }
@@ -44,7 +44,7 @@ class SolicitudController extends Controller
      */
     public function show($id)
     {
-        return (new SolicitudResource(Solicitud::findOrFail($id)))
+        return (new SolicitudResource(Solicitud::with(['empleado','tipoSolicitud'])->findOrFail($id)))
             ->response()
             ->setStatusCode(200);
     }

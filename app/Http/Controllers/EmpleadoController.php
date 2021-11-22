@@ -15,7 +15,7 @@ class EmpleadoController extends Controller
      */
     public function index()
     {
-        return EmpleadoResource::collection(Empleado::all())
+        return EmpleadoResource::collection(Empleado::with(['contratos','solicitudes'])->get())
             ->response()
             ->setStatusCode(200);
     }
@@ -44,7 +44,7 @@ class EmpleadoController extends Controller
      */
     public function show($id)
     {
-        return (new EmpleadoResource(Empleado::findOrFail($id)))
+        return (new EmpleadoResource(Empleado::with(['contratos','solicitudes'])->findOrFail($id)))
             ->response()
             ->setStatusCode(200);
     }

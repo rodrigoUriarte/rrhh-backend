@@ -15,7 +15,7 @@ class EmpresaController extends Controller
      */
     public function index()
     {
-        return EmpresaResource::collection(Empresa::all())
+        return EmpresaResource::collection(Empresa::with(['areas'])->get())
             ->response()
             ->setStatusCode(200);
     }
@@ -44,7 +44,7 @@ class EmpresaController extends Controller
      */
     public function show($id)
     {
-        return (new EmpresaResource(Empresa::findOrFail($id)))
+        return (new EmpresaResource(Empresa::with(['areas'])->findOrFail($id)))
             ->response()
             ->setStatusCode(200);
     }
