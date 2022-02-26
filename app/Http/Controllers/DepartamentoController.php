@@ -15,9 +15,11 @@ class DepartamentoController extends Controller
      */
     public function index()
     {
-        return DepartamentoResource::collection(Departamento::with(['area','cargos'])->get())
-            ->response()
-            ->setStatusCode(200);
+        $departamentos = Departamento::with(['area', 'cargos'])
+            ->withTrashed()
+            ->get();
+
+        return $this->response(DepartamentoResource::collection($departamentos));
     }
 
     /**
@@ -31,9 +33,7 @@ class DepartamentoController extends Controller
         $departamento = new Departamento($request->all());
         $departamento->save();
 
-        return (new DepartamentoResource($departamento))
-            ->response()
-            ->setStatusCode(201);
+        return $this->response(new DepartamentoResource($departamento));
     }
 
     /**
@@ -44,9 +44,10 @@ class DepartamentoController extends Controller
      */
     public function show($id)
     {
-        return (new DepartamentoResource(Departamento::with(['area','cargos'])->findOrFail($id)))
-            ->response()
-            ->setStatusCode(200);
+        $departamento = Departamento::with(['area', 'cargos'])->findOrFail($id);
+
+        return $this->response(new DepartamentoResource($departamento));
+
     }
 
     /**
@@ -63,9 +64,7 @@ class DepartamentoController extends Controller
         $departamento = Departamento::findOrFail($id);
         $departamento->update($request->all());
 
-        return (new DepartamentoResource($departamento))
-            ->response()
-            ->setStatusCode(201);
+        return $this->response(new DepartamentoResource($departamento));
     }
 
     /**
@@ -79,6 +78,6 @@ class DepartamentoController extends Controller
         $departamento = Departamento::findOrFail($id);
         $departamento->delete();
 
-        return response()->json(null, 204);
+        return $this->response(new DepartamentoResource($departamento));
     }
 }

@@ -17,7 +17,10 @@ class TiposContrato extends Migration
         Schema::create('tipos_contrato', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
+            $table->string('descripcion');
+            $table->integer('cantidad_horas');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

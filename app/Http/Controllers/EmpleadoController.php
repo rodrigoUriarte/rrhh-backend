@@ -5,9 +5,22 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EmpleadoRequest;
 use App\Http\Resources\EmpleadoResource;
 use App\Models\Empleado;
+use App\Services\EmpleadoFilesService;
+use Carbon\Carbon;
 
 class EmpleadoController extends Controller
 {
+    /**
+     * @var EmpleadoFilesService
+     */
+    protected $service;
+
+    public function __construct(EmpleadoFilesService $service)
+    {
+        //parent::__construct();
+        $this->service = $service;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,9 +28,11 @@ class EmpleadoController extends Controller
      */
     public function index()
     {
-        return EmpleadoResource::collection(Empleado::with(['contratos','solicitudes'])->get())
-            ->response()
-            ->setStatusCode(200);
+        $empleados = Empleado::with(['contratos', 'solicitudes'])
+            ->withTrashed()
+            ->get();
+
+        return $this->response(EmpleadoResource::collection($empleados));
     }
 
     /**
@@ -28,12 +43,34 @@ class EmpleadoController extends Controller
      */
     public function store(EmpleadoRequest $request)
     {
-        $empleado = new Empleado($request->all());
-        $empleado->save();
 
-        return (new EmpleadoResource($empleado))
-            ->response()
-            ->setStatusCode(201);
+        $fotoPerfilFile = $request->file('foto_perfil');
+        $preocupacionalFile = $request->file('preocupacional');
+
+        $fotoPerfilPath = $this->service->upload($fotoPerfilFile);
+        $preocupacionalPath = $this->service->upload($preocupacionalFile);
+
+        $empleado = Empleado::create([
+            'legajo' => $request->input('legajo'),
+            'apellido' => $request->input('apellido'),
+            'nombre' => $request->input('nombre'),
+            'dni' => $request->input('dni'),
+            'cuil' => $request->input('cuil'),
+            'sexo' => $request->input('sexo'),
+            'fecha_nacimiento' => Carbon::createFromFormat('d/m/Y', $request->input('fecha_nacimiento')),
+            'lugar_nacimiento' => $request->input('lugar_nacimiento'),
+            'domicilio' => $request->input('domicilio'),
+            'email' => $request->input('email'),
+            'telefono' => $request->input('telefono'),
+            'foto_perfil' => $fotoPerfilPath,
+            'fecha_ingreso' => Carbon::createFromFormat('d/m/Y', $request->input('fecha_ingreso')),
+            'estado_civil' => $request->input('estado_civil'),
+            'cantidad_hijos' => $request->input('cantidad_hijos'),
+            'telefono_emergencia' => $request->input('telefono_emergencia'),
+            'preocupacional' => $preocupacionalPath,
+        ]);
+
+        return $this->response(new EmpleadoResource($empleado));
     }
 
     /**
@@ -44,9 +81,8 @@ class EmpleadoController extends Controller
      */
     public function show($id)
     {
-        return (new EmpleadoResource(Empleado::with(['contratos','solicitudes'])->findOrFail($id)))
-            ->response()
-            ->setStatusCode(200);
+        $empleado = Empleado::with(['contratos', 'solicitudes'])->findOrFail($id);
+        return $this->response(new EmpleadoResource($empleado));
     }
 
     /**
@@ -58,14 +94,39 @@ class EmpleadoController extends Controller
      */
     public function update(EmpleadoRequest $request, $id)
     {
-        //$validated = $request->validated();
-
         $empleado = Empleado::findOrFail($id);
-        $empleado->update($request->all());
+        $empleado->legajo = $request->input('legajo');
+        $empleado->apellido = $request->input('apellido');
+        $empleado->nombre = $request->input('nombre');
+        $empleado->dni = $request->input('dni');
+        $empleado->cuil = $request->input('cuil');
+        $empleado->sexo = $request->input('sexo');
+        $empleado->fecha_nacimiento = Carbon::createFromFormat('d/m/Y', $request->input('fecha_nacimiento'));
+        $empleado->lugar_nacimiento = $request->input('lugar_nacimiento');
+        $empleado->domicilio = $request->input('domicilio');
+        $empleado->email = $request->input('email');
+        $empleado->telefono = $request->input('telefono');
+        $empleado->fecha_ingreso = Carbon::createFromFormat('d/m/Y', $request->input('fecha_ingreso'));
+        $empleado->fecha_ingreso = Carbon::createFromFormat('d/m/Y', $request->input('fecha_baja'));
+        $empleado->estado_civil = $request->input('estado_civil');
+        $empleado->cantidad_hijos = $request->input('cantidad_hijos');
+        $empleado->telefono_emergencia = $request->input('telefono_emergencia');
 
-        return (new EmpleadoResource($empleado))
-            ->response()
-            ->setStatusCode(201);
+        if ($request->hasFile('foto_perfil')) {
+            $file = $request->file('foto_perfil');
+            $path = $this->service->upload($file);
+            $empleado->foto_perfil = $path;
+        }
+
+        if ($request->hasFile('preocupacional')) {
+            $file = $request->file('preocupacional');
+            $path = $this->service->upload($file);
+            $empleado->preocupacional = $path;
+        }
+
+        $empleado->save();
+
+        return $this->response(new EmpleadoResource($empleado));
     }
 
     /**
@@ -77,8 +138,10 @@ class EmpleadoController extends Controller
     public function destroy($id)
     {
         $empleado = Empleado::findOrFail($id);
+        $this->service->delete($empleado->foto_perfil);
+        $this->service->delete($empleado->preocupacional);
         $empleado->delete();
 
-        return response()->json(null, 204);
+        return $this->response(new EmpleadoResource($empleado));
     }
 }

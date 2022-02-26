@@ -16,70 +16,63 @@ class UserController extends Controller
      */
     public function index()
     {
-        return UserResource::collection(User::all())
-            ->response()
-            ->setStatusCode(200);
+        $users = User::withTrashed()->get();
+
+        return $this->response(UserResource::collection($users));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(UserRequest $request)
     {
-        return $request;
-        $user =  User::create([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'password'=>Hash::make($request->password)
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password)
         ]);
 
-        return (new UserResource($user))
-            ->response()
-            ->setStatusCode(201);
+        return $this->response(new UserResource($user));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        return (new UserResource(User::findOrFail($id)->loadMissing('items')))
-            ->response()
-            ->setStatusCode(200);
+        $user = User::findOrFail($id);
+
+        return $this->response(new UserResource($user));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(UserRequest $request, $id)
     {
-        //$validated = $request->validated();
-
         $user = User::findOrFail($id);
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->save();
 
-        return (new UserResource($user))
-            ->response()
-            ->setStatusCode(201);
+        return $this->response(new UserResource($user));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -87,7 +80,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return response()->json(null, 204);
+        return $this->response(new UserResource($user));
     }
 
 }

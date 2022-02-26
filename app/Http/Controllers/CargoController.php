@@ -15,9 +15,11 @@ class CargoController extends Controller
      */
     public function index()
     {
-        return CargoResource::collection(Cargo::with(['departamento','contrato'])->get())
-            ->response()
-            ->setStatusCode(200);
+        $cargos = Cargo::with(['departamento', 'contrato'])
+            ->withTrashed()
+            ->get();
+
+        return $this->response(CargoResource::collection($cargos));
     }
 
     /**
@@ -31,9 +33,7 @@ class CargoController extends Controller
         $cargo = new Cargo($request->all());
         $cargo->save();
 
-        return (new CargoResource($cargo))
-            ->response()
-            ->setStatusCode(201);
+        return $this->response(new CargoResource($cargo));
     }
 
     /**
@@ -44,9 +44,9 @@ class CargoController extends Controller
      */
     public function show($id)
     {
-        return (new CargoResource(Cargo::with(['departamento','contrato'])->findOrFail($id)))
-            ->response()
-            ->setStatusCode(200);
+        $cargo = Cargo::with(['departamento', 'contrato'])->findOrFail($id);
+
+        return $this->response(new CargoResource($cargo));
     }
 
     /**
@@ -58,14 +58,10 @@ class CargoController extends Controller
      */
     public function update(CargoRequest $request, $id)
     {
-        //$validated = $request->validated();
-
         $cargo = Cargo::findOrFail($id);
         $cargo->update($request->all());
 
-        return (new CargoResource($cargo))
-            ->response()
-            ->setStatusCode(201);
+        return $this->response(new CargoResource($cargo));
     }
 
     /**
@@ -79,6 +75,6 @@ class CargoController extends Controller
         $cargo = Cargo::findOrFail($id);
         $cargo->delete();
 
-        return response()->json(null, 204);
+        return $this->response(new CargoResource($cargo));
     }
 }

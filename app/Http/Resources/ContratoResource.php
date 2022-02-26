@@ -20,9 +20,11 @@ class ContratoResource extends JsonResource
             'tipoContrato' => new TipoContratoResource($this->whenLoaded('tipoContrato')),
             'cargo' => new CargoResource($this->whenLoaded('cargo')),
             'nombre' => $this->nombre,
-            'fecha' => $this->nombre,
+            'fecha' => $this->fecha,
+            'basico' => $this->basico,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'updated_at' => $this->updated_at,
+            'deleted_at' => $this->deleted_at
         ];
     }
 }

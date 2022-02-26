@@ -15,9 +15,11 @@ class AreaController extends Controller
      */
     public function index()
     {
-        return AreaResource::collection(Area::with(['empresa','departamentos'])->get())
-            ->response()
-            ->setStatusCode(200);
+        $areas = Area::with(['empresa', 'departamentos'])
+            ->withTrashed()
+            ->get();
+
+        return $this->response(AreaResource::collection($areas));
     }
 
     /**
@@ -31,9 +33,7 @@ class AreaController extends Controller
         $area = new Area($request->all());
         $area->save();
 
-        return (new AreaResource($area))
-            ->response()
-            ->setStatusCode(201);
+        return $this->response(new AreaResource($area));
     }
 
     /**
@@ -44,9 +44,9 @@ class AreaController extends Controller
      */
     public function show($id)
     {
-        return (new AreaResource(Area::with(['empresa','departamentos'])->findOrFail($id)))
-            ->response()
-            ->setStatusCode(200);
+        $area = Area::with(['empresa', 'departamentos'])->findOrFail($id);
+
+        return $this->response(new AreaResource($area));
     }
 
     /**
@@ -58,14 +58,10 @@ class AreaController extends Controller
      */
     public function update(AreaRequest $request, $id)
     {
-        //$validated = $request->validated();
-
         $area = Area::findOrFail($id);
         $area->update($request->all());
 
-        return (new AreaResource($area))
-            ->response()
-            ->setStatusCode(201);
+        return $this->response(new AreaResource($area));
     }
 
     /**
@@ -79,6 +75,6 @@ class AreaController extends Controller
         $area = Area::findOrFail($id);
         $area->delete();
 
-        return response()->json(null, 204);
+        return $this->response(new AreaResource($area));
     }
 }

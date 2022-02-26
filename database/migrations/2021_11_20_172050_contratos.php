@@ -21,7 +21,9 @@ class Contratos extends Migration
             $table->foreignId('cargo_id')->constrained();
             $table->string('nombre');
             $table->date('fecha');
+            $table->float('basico',9,2);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

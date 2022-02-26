@@ -17,7 +17,10 @@ class TiposSolicitud extends Migration
         Schema::create('tipos_solicitud', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
+            $table->string('descripcion');
+            $table->tinyInteger('cantidad_dias');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

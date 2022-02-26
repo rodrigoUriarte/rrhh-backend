@@ -20,7 +20,8 @@ class DepartamentoResource extends JsonResource
             'cargos' => CargoResource::collection($this->whenLoaded('cargos')),
             'nombre' => $this->nombre,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'updated_at' => $this->updated_at,
+            'deleted_at' => $this->deleted_at
         ];
     }
 }

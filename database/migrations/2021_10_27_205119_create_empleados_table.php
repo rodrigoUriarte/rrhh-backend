@@ -19,17 +19,22 @@ class CreateEmpleadosTable extends Migration
             $table->string('apellido');
             $table->string('nombre');
             $table->string('dni');
+            $table->string('cuil');
+            $table->char('sexo');
             $table->date('fecha_nacimiento');
+            $table->string('lugar_nacimiento');
             $table->string('domicilio');
             $table->string('email');
             $table->string('telefono');
-            $table->binary('foto_perfil');
-            $table->char('sexo');
+            $table->string('foto_perfil')->nullable();
             $table->date('fecha_ingreso');
-            $table->string('telefono_emergencia');
-            $table->string('documentacion');
+            $table->date('fecha_baja')->nullable();
             $table->string('estado_civil');
+            $table->integer('cantidad_hijos')->nullable();
+            $table->string('telefono_emergencia');
+            $table->string('preocupacional');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

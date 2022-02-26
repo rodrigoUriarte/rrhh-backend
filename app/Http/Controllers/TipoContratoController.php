@@ -15,9 +15,11 @@ class TipoContratoController extends Controller
      */
     public function index()
     {
-        return TipoContratoResource::collection(TipoContrato::with(['contratos'])->get())
-            ->response()
-            ->setStatusCode(200);
+        $tiposContrato = TipoContrato::with(['contratos'])
+            ->withTrashed()
+            ->get();
+
+        return $this->response(TipoContratoResource::collection($tiposContrato));
     }
 
     /**
@@ -31,9 +33,7 @@ class TipoContratoController extends Controller
         $tipoContrato = new TipoContrato($request->all());
         $tipoContrato->save();
 
-        return (new TipoContratoResource($tipoContrato))
-            ->response()
-            ->setStatusCode(201);
+        return $this->response(new TipoContratoResource($tipoContrato));
     }
 
     /**
@@ -44,9 +44,9 @@ class TipoContratoController extends Controller
      */
     public function show($id)
     {
-        return (new TipoContratoResource(TipoContrato::with(['contratos'])->findOrFail($id)))
-            ->response()
-            ->setStatusCode(200);
+        $tipoContrato = TipoContrato::with(['contratos'])->findOrFail($id);
+
+        return $this->response(new TipoContratoResource($tipoContrato));
     }
 
     /**
@@ -58,14 +58,10 @@ class TipoContratoController extends Controller
      */
     public function update(TipoContratoRequest $request, $id)
     {
-        //$validated = $request->validated();
-
         $tipoContrato = TipoContrato::findOrFail($id);
         $tipoContrato->update($request->all());
 
-        return (new TipoContratoResource($tipoContrato))
-            ->response()
-            ->setStatusCode(201);
+        return $this->response(new TipoContratoResource($tipoContrato));
     }
 
     /**
@@ -79,6 +75,6 @@ class TipoContratoController extends Controller
         $tipoContrato = TipoContrato::findOrFail($id);
         $tipoContrato->delete();
 
-        return response()->json(null, 204);
+        return $this->response(new TipoContratoResource($tipoContrato));
     }
 }

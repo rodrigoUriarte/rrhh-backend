@@ -18,8 +18,9 @@ class Cargos extends Migration
             $table->id();
             $table->foreignId('departamento_id')->constrained();
             $table->string('nombre');
-            $table->date('fecha');
+            $table->string('descripcion');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -15,9 +15,11 @@ class TipoSolicitudController extends Controller
      */
     public function index()
     {
-        return TipoSolicitudResource::collection(TipoSolicitud::with(['solicitudes'])->get())
-            ->response()
-            ->setStatusCode(200);
+        $tiposSolicitud = TipoSolicitud::with(['solicitudes'])
+            ->withTrashed()
+            ->get();
+
+        return $this->response(TipoSolicitudResource::collection($tiposSolicitud));
     }
 
     /**
@@ -31,9 +33,7 @@ class TipoSolicitudController extends Controller
         $tipoSolicitud = new TipoSolicitud($request->all());
         $tipoSolicitud->save();
 
-        return (new TipoSolicitudResource($tipoSolicitud))
-            ->response()
-            ->setStatusCode(201);
+        return $this->response(new TipoSolicitudResource($tipoSolicitud));
     }
 
     /**
@@ -44,9 +44,9 @@ class TipoSolicitudController extends Controller
      */
     public function show($id)
     {
-        return (new TipoSolicitudResource(TipoSolicitud::with(['solicitudes'])->findOrFail($id)))
-            ->response()
-            ->setStatusCode(200);
+        $tipoSolicitud = TipoSolicitud::with(['solicitudes'])->findOrFail($id);
+
+        return $this->response(new TipoSolicitudResource($tipoSolicitud));
     }
 
     /**
@@ -58,14 +58,10 @@ class TipoSolicitudController extends Controller
      */
     public function update(TipoSolicitudRequest $request, $id)
     {
-        //$validated = $request->validated();
-
         $tipoSolicitud = TipoSolicitud::findOrFail($id);
         $tipoSolicitud->update($request->all());
 
-        return (new TipoSolicitudResource($tipoSolicitud))
-            ->response()
-            ->setStatusCode(201);
+        return $this->response(new TipoSolicitudResource($tipoSolicitud));
     }
 
     /**
@@ -79,6 +75,6 @@ class TipoSolicitudController extends Controller
         $tipoSolicitud = TipoSolicitud::findOrFail($id);
         $tipoSolicitud->delete();
 
-        return response()->json(null, 204);
+        return $this->response(new TipoSolicitudResource($tipoSolicitud));
     }
 }

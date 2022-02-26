@@ -19,6 +19,7 @@ class Areas extends Migration
             $table->foreignId('empresa_id')->constrained();
             $table->string('nombre');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SolicitudRequest;
 use App\Http\Resources\SolicitudResource;
 use App\Models\Solicitud;
+use Carbon\Carbon;
 
 class SolicitudController extends Controller
 {
@@ -15,9 +16,11 @@ class SolicitudController extends Controller
      */
     public function index()
     {
-        return SolicitudResource::collection(Solicitud::with(['empleado','tipoSolicitud'])->get())
-            ->response()
-            ->setStatusCode(200);
+        $solicitudes = Solicitud::with(['empleado', 'tipoSolicitud'])
+            ->withTrashed()
+            ->get();
+
+        return $this->response(SolicitudResource::collection($solicitudes));
     }
 
     /**
@@ -28,12 +31,16 @@ class SolicitudController extends Controller
      */
     public function store(SolicitudRequest $request)
     {
-        $solicitud = new Solicitud($request->all());
+        $solicitud = Solicitud::create([
+            'empleado_id' => $request->input('empleado_id'),
+            'tipo_solicitud_id' => $request->input('tipo_solicitud_id'),
+            'nombre' => $request->input('nombre'),
+            'fecha' => Carbon::createFromFormat('d/m/Y', $request->input('fecha')),
+            'aprobado' => $request->input('aprobado'),
+        ]);
         $solicitud->save();
 
-        return (new SolicitudResource($solicitud))
-            ->response()
-            ->setStatusCode(201);
+        return $this->response(new SolicitudResource($solicitud));
     }
 
     /**
@@ -44,9 +51,9 @@ class SolicitudController extends Controller
      */
     public function show($id)
     {
-        return (new SolicitudResource(Solicitud::with(['empleado','tipoSolicitud'])->findOrFail($id)))
-            ->response()
-            ->setStatusCode(200);
+        $solicitud = Solicitud::with(['empleado', 'tipoSolicitud'])->findOrFail($id);
+
+        return $this->response(new SolicitudResource($solicitud));
     }
 
     /**
@@ -58,14 +65,17 @@ class SolicitudController extends Controller
      */
     public function update(SolicitudRequest $request, $id)
     {
-        //$validated = $request->validated();
-
         $solicitud = Solicitud::findOrFail($id);
-        $solicitud->update($request->all());
 
-        return (new SolicitudResource($solicitud))
-            ->response()
-            ->setStatusCode(201);
+        $solicitud->empleado_id = $request->input('empleado_id');
+        $solicitud->tipo_solicitud_id = $request->input('tipo_solicitud_id');
+        $solicitud->nombre = $request->input('nombre');
+        $solicitud->fecha = Carbon::createFromFormat('d/m/Y', $request->input('fecha'));
+        $solicitud->aprobado = $request->input('aprobado');
+
+        $solicitud->save();
+
+        return $this->response(new SolicitudResource($solicitud));
     }
 
     /**
@@ -79,6 +89,6 @@ class SolicitudController extends Controller
         $solicitud = Solicitud::findOrFail($id);
         $solicitud->delete();
 
-        return response()->json(null, 204);
+        return $this->response(new SolicitudResource($solicitud));
     }
 }

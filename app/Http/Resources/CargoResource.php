@@ -19,9 +19,10 @@ class CargoResource extends JsonResource
             'departamento' => new DepartamentoResource($this->whenLoaded('departamento')),
             'contrato' => new ContratoResource($this->whenLoaded('contrato')),
             'nombre' => $this->nombre,
-            'fecha' => $this->nombre,
+            'descripcion' => $this->descripcion,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'updated_at' => $this->updated_at,
+            'deleted_at' => $this->deleted_at
         ];
     }
 }

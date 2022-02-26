@@ -19,6 +19,7 @@ class Departamentos extends Migration
             $table->foreignId('area_id')->constrained();
             $table->string('nombre');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

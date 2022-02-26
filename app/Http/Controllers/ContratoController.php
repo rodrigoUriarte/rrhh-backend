@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ContratoRequest;
 use App\Http\Resources\ContratoResource;
 use App\Models\Contrato;
+use Carbon\Carbon;
 
 class ContratoController extends Controller
 {
@@ -15,9 +16,11 @@ class ContratoController extends Controller
      */
     public function index()
     {
-        return ContratoResource::collection(Contrato::with(['empleado','tipoContrato','cargo'])->get())
-            ->response()
-            ->setStatusCode(200);
+        $contratos = Contrato::with(['empleado', 'tipoContrato', 'cargo'])
+            ->withTrashed()
+            ->get();
+
+        return $this->response(ContratoResource::collection($contratos));
     }
 
     /**
@@ -28,12 +31,17 @@ class ContratoController extends Controller
      */
     public function store(ContratoRequest $request)
     {
-        $contrato = new Contrato($request->all());
+        $contrato = Contrato::create([
+            'empleado_id' => $request->input('empleado_id'),
+            'tipo_contrato_id' => $request->input('tipo_contrato_id'),
+            'cargo_id' => $request->input('cargo_id'),
+            'nombre' => $request->input('nombre'),
+            'fecha' => Carbon::createFromFormat('d/m/Y', $request->input('fecha')),
+            'basico' => $request->input('basico'),
+        ]);
         $contrato->save();
 
-        return (new ContratoResource($contrato))
-            ->response()
-            ->setStatusCode(201);
+        return $this->response(new ContratoResource($contrato));
     }
 
     /**
@@ -44,9 +52,9 @@ class ContratoController extends Controller
      */
     public function show($id)
     {
-        return (new ContratoResource(Contrato::with(['empleado','tipoContrato','cargo'])->findOrFail($id)))
-            ->response()
-            ->setStatusCode(200);
+        $contrato = Contrato::with(['empleado', 'tipoContrato', 'cargo'])->findOrFail($id);
+
+        return $this->response(new ContratoResource($contrato));
     }
 
     /**
@@ -58,14 +66,17 @@ class ContratoController extends Controller
      */
     public function update(ContratoRequest $request, $id)
     {
-        //$validated = $request->validated();
-
         $contrato = Contrato::findOrFail($id);
-        $contrato->update($request->all());
+        $contrato->empleado_id = $request->input('empleado_id');
+        $contrato->tipo_contrato_id = $request->input('tipo_contrato_id');
+        $contrato->cargo_id = $request->input('cargo_id');
+        $contrato->nombre = $request->input('nombre');
+        $contrato->fecha = Carbon::createFromFormat('d/m/Y', $request->input('fecha'));
+        $contrato->basico = $request->input('basico');
 
-        return (new ContratoResource($contrato))
-            ->response()
-            ->setStatusCode(201);
+        $contrato->save();
+
+        return $this->response(new ContratoResource($contrato));
     }
 
     /**
@@ -79,6 +90,6 @@ class ContratoController extends Controller
         $contrato = Contrato::findOrFail($id);
         $contrato->delete();
 
-        return response()->json(null, 204);
+        return $this->response(new ContratoResource($contrato));
     }
 }

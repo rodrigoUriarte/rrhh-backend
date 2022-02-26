@@ -20,7 +20,9 @@ class Solicitudes extends Migration
             $table->foreignId('tipo_solicitud_id')->constrained('tipos_solicitud');
             $table->string('nombre');
             $table->date('fecha');
+            $table->boolean('aprobado')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
