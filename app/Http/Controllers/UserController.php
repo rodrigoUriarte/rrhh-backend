@@ -16,7 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::withTrashed()->get();
+        $users = User::with(['empresas'])->withTrashed()->get();
 
         return $this->response(UserResource::collection($users));
     }
@@ -32,7 +32,8 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'type' => $request->type,
         ]);
 
         return $this->response(new UserResource($user));
@@ -46,7 +47,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::with(['empresas'])->findOrFail($id);
 
         return $this->response(new UserResource($user));
     }
@@ -64,6 +65,7 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
+        $user->type = $request->type;
         $user->save();
 
         return $this->response(new UserResource($user));

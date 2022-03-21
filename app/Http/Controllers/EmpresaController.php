@@ -6,6 +6,7 @@ use App\Http\Requests\EmpresaRequest;
 use App\Http\Resources\EmpresaResource;
 use App\Models\Empresa;
 use App\Services\EmpresaFilesService;
+use Carbon\Carbon;
 
 class EmpresaController extends Controller
 {
@@ -27,7 +28,7 @@ class EmpresaController extends Controller
      */
     public function index()
     {
-        $empresas = Empresa::with(['areas'])
+        $empresas = Empresa::with(['areas','user'])
             ->withTrashed()
             ->get();
 
@@ -48,13 +49,17 @@ class EmpresaController extends Controller
         $logoPath = $this->service->upload($logoFile);
 
         $empresa = Empresa::create([
+            'user_id' => $request->input('user_id'),
             'denominacion_social' => $request->input('denominacion_social'),
             'cuit' => $request->input('cuit'),
             'email' => $request->input('email'),
             'logo' => $logoPath,
+            'inicio_actividades' => Carbon::createFromFormat('d/m/Y', $request->input('inicio_actividades')),
             'clasificacion' => $request->input('clasificacion'),
-            'domicilio' => $request->input('domicilio'),
+            'domicilio_legal' => $request->input('domicilio_legal'),
+            'domicilio_fiscal' => $request->input('domicilio_fiscal'),
             'telefono' => $request->input('telefono'),
+            'moneda' => $request->input('moneda'),
         ]);
 
         return $this->response(new EmpresaResource($empresa));
@@ -68,7 +73,7 @@ class EmpresaController extends Controller
      */
     public function show($id)
     {
-        $empresa = Empresa::with(['areas'])->findOrFail($id);
+        $empresa = Empresa::with(['areas','user'])->findOrFail($id);
 
         return $this->response(new EmpresaResource($empresa));
     }
@@ -83,12 +88,16 @@ class EmpresaController extends Controller
     public function update(EmpresaRequest $request, $id)
     {
         $empresa = Empresa::findOrFail($id);
-        $empresa->denominacion_social = $request->input('legajo');
-        $empresa->cuit = $request->input('apellido');
-        $empresa->email = $request->input('nombre');
-        $empresa->clasificacion = $request->input('dni');
-        $empresa->domicilio = $request->input('cuil');
-        $empresa->telefono = $request->input('sexo');
+        $empresa->user_id = $request->input('user_id');
+        $empresa->denominacion_social = $request->input('denominacion_social');
+        $empresa->cuit = $request->input('cuit');
+        $empresa->email = $request->input('email');
+        $empresa->inicio_actividades = Carbon::createFromFormat('d/m/Y', $request->input('inicio_actividades'));
+        $empresa->clasificacion = $request->input('clasificacion');
+        $empresa->domicilio_legal = $request->input('domicilio_legal');
+        $empresa->domicilio_fiscal = $request->input('domicilio_fiscal');
+        $empresa->telefono = $request->input('telefono');
+        $empresa->moneda = $request->input('moneda');
 
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');

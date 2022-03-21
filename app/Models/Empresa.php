@@ -39,4 +39,9 @@ class Empresa extends Model
         return $this->hasMany(Area::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

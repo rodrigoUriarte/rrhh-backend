@@ -15,13 +15,17 @@ class CreateEmpresasTable extends Migration
     {
         Schema::create('empresas', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained();
             $table->string('denominacion_social');
             $table->string('cuit');
             $table->string('email');
             $table->string('logo');
+            $table->date('inicio_actividades');
             $table->string('clasificacion');
-            $table->string('domicilio');
+            $table->string('domicilio_legal');
+            $table->string('domicilio_fiscal');
             $table->string('telefono');
+            $table->string('moneda');
             $table->timestamps();
             $table->softDeletes();
         });

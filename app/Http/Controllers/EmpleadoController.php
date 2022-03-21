@@ -7,6 +7,8 @@ use App\Http\Resources\EmpleadoResource;
 use App\Models\Empleado;
 use App\Services\EmpleadoFilesService;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 
 class EmpleadoController extends Controller
 {
@@ -23,14 +25,19 @@ class EmpleadoController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $empresa_id = $request->input('empresa_id');
         $empleados = Empleado::with(['contratos', 'solicitudes'])
             ->withTrashed()
-            ->get();
+            ->when($empresa_id, function (Builder $query) use ($empresa_id) {
+                return $query->whereHas('contratos.cargo.departamento.area.empresa', function (Builder $query) use ($empresa_id) {
+                    $query->where('id', $empresa_id);
+                })->get();
+            });
 
         return $this->response(EmpleadoResource::collection($empleados));
     }
