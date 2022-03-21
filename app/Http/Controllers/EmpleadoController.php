@@ -36,8 +36,9 @@ class EmpleadoController extends Controller
             ->when($empresa_id, function (Builder $query) use ($empresa_id) {
                 return $query->whereHas('contratos.cargo.departamento.area.empresa', function (Builder $query) use ($empresa_id) {
                     $query->where('id', $empresa_id);
-                })->get();
-            });
+                });
+            })
+        ->get();
 
         return $this->response(EmpleadoResource::collection($empleados));
     }
